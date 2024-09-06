@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <link rel="stylesheet" href="css/upload.css">
+</head>
+<body>
+    <h2>Upload File</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="fileInput" accept="image/*, .pdf, .doc, .docx"><br><br>
+        <input type="button" value="Upload" onclick="uploadFile()">
+    </form>
+
+    <script>
+        function uploadFile() {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+            if (file) {
+                // Here you can write code to upload the file to your server using AJAX
+                // For simplicity, let's just display a message
+                alert('File uploaded successfully: ' + file.name);
+            } else {
+                alert('Please select a file to upload!');
+            }
+        }
+    </script>
+</body>
+</html>
