@@ -37,7 +37,14 @@
                 console.log("data===",data)
                 if (data.err=="OK") {
                     alert('Login successful');
-                    window.location.href = 'http://47.101.195.52/upload/upload.html';
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirectUrl = urlParams.get('redirect');
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    } else {
+                        // 如果没有 redirect 参数，可以重定向到默认页面
+                        window.location.href = '/';
+                    }
                 } else {
                     alert('Login failed: ' + data.message);
                 }
