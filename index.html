@@ -27,19 +27,20 @@
 
         /* 卡片容器样式 */
         .card-container {
+            margin-top: 50px;
             display: grid;
             gap: 20px;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             padding: 20px;
-            width: 100%;
-            max-width: 1200px;
+            width: 50%;
+            max-width: 800px;
             justify-items: center;
         }
 
         /* 卡片样式 */
         .card {
-            width: 250px;
-            height: 350px;
+            width: 150px;
+            height: 200px;
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(15px); /* 更强的玻璃通透效果 */
             border-radius: 15px;
@@ -80,7 +81,7 @@
 
         /* 图标样式 */
         .card-icon {
-            font-size: 4em;
+            font-size: 3em;
             margin-bottom: 20px;
             transition: transform 0.3s, color 0.3s;
         }
@@ -124,16 +125,13 @@
 </head>
 <body>
 
-    <header>
-        <h1>功能卡片展示</h1>
-    </header>
 
     <div class="card-container">
         <!-- 上传文件功能卡片 -->
         <a href="https://www.yexieman.com/upload/upload.html" class="card">
             <div class="card-content">
                 <i class="card-icon fas fa-upload"></i> <!-- 上传文件图标 -->
-                <h3>上传文件</h3>
+                <h4>上传文件</h4>
                 <p>点击上传文件，开始操作。</p>
             </div>
         </a>
@@ -142,7 +140,7 @@
         <a href="https://www.yexieman.com/upload/viewFile.html" class="card">
             <div class="card-content">
                 <i class="card-icon fas fa-download"></i> <!-- 查看/下载文件图标 -->
-                <h3>查看下载文件</h3>
+                <h4>查看下载文件</h4>
                 <p>查看或下载您所需的文件。</p>
             </div>
         </a>
@@ -151,7 +149,7 @@
         <a href="https://www.yexieman.com/tool/generatr.html" class="card">
             <div class="card-content">
                 <i class="card-icon fas fa-qrcode"></i> <!-- 二维码图标 -->
-                <h3>生成二维码</h3>
+                <h4>生成二维码</h4>
                 <p>生成对应链接的二维码。</p>
             </div>
         </a>
@@ -162,22 +160,22 @@
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        window.addEventListener('DOMContentLoaded', async () => {
-            // 认证检查（登录验证）
-            fetch('https://www.yexieman.com/serverApi/checkLogin', {
-                method: 'GET',
-                credentials: 'include',
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message !== "已登录") {
-                    window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
-                }
-            })
-            .catch(error => {
-                window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
-            });
-        });
+        // window.addEventListener('DOMContentLoaded', async () => {
+        //     // 认证检查（登录验证）
+        //     fetch('https://www.yexieman.com/serverApi/checkLogin', {
+        //         method: 'GET',
+        //         credentials: 'include',
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.message !== "已登录") {
+        //             window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+        //         }
+        //     })
+        //     .catch(error => {
+        //         window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+        //     });
+        // });
         // 初始化粒子背景效果
         particlesJS('particles-js', {
             particles: {
