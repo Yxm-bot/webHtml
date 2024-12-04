@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查看文件</title>
+    <style>
+        /* 页面背景、布局和居中 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .module {
+            width: 48%;
+            aspect-ratio: 1;
+            padding: 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #007bff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .module h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #007bff;
+        }
+
+        .file-list {
+            margin-top: 10px;
+            list-style: none;
+            padding: 0;
+            font-size: 0.9rem;
+            max-height: 459px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .file-list li {
+            background: #f0f8ff;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            padding: 8px;
+            margin-bottom: 8px;
+            color: #007bff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .file-list li:hover {
+            background: #e0f7ff;
+            cursor: pointer;
+        }
+
+        .file-list li .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .view-button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* 媒体查询：适应小屏幕 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .module {
+                width: 80%;
+                aspect-ratio: 1;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .module {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="module">
+            <h1>查看文件</h1>
+            <button class="view-button" id="view-button">查看上传文件</button>
+            <ul class="file-list" id="server-file-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        // 查看文件功能的JS代码
+        window.addEventListener('DOMContentLoaded', async () => {
+            fetch('https://www.yexieman.com/serverApi/checkLogin', {
+                method: 'GET',
+                credentials: 'include',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message !== "已登录") {
+                    window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+                }
+            })
+            .catch(error => {
+                window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+            });
+        });
+
+        const viewButton = document.getElementById('view-button');
+        const serverFileList = document.getElementById('server-file-list');
+
+        viewButton.addEventListener('click', async () => {
+            try {
+                const response = await fetch('https://www.yexieman.com/toolServer/listFiles');
+                const files = await response.json();
+
+                if (response.ok) {
+                    serverFileList.innerHTML = '';  // 清空文件列表
+                    files.forEach((file) => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `${file} <button class="download-btn" data-file="${file}">下载</button>`;
+                        serverFileList.appendChild(listItem);
+                    });
+                } else {
+                    serverFileList.innerHTML = '获取文件列表失败';
+                }
+            } catch (error) {
+                serverFileList.innerHTML = `获取文件列表失败：${error.message}`;
+            }
+        });
+
+        serverFileList.addEventListener('click', (event) => {
+            if (event.target.classList.contains('download-btn')) {
+                const button = event.target;
+                const fileName = button.dataset.file;
+
+                button.disabled = true;
+                button.style.backgroundColor = '#ccc';
+                button.textContent = '已下载';
+                button.style.cursor = 'not-allowed';
+
+                const url = `https://www.yexieman.com/toolServer/download?file=${fileName}`;
+                window.location.href = url;  // 开始下载
+            }
+        });
+    </script>
+</body>
+</html>

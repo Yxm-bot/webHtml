@@ -3,39 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文件上传与查看</title>
+    <title>文件上传</title>
     <style>
-        /* 1. 设置网页背景，适配宽高 */
+        /* 页面背景、布局和居中 */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
-            background-size: cover;
-            background-position: center;
-            height: 100vh; /* 背景适应浏览器高度 */
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
         }
 
-        /* 2. 主要内容容器 */
         .container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
             gap: 20px;
-            max-width: 1300px;
-            width: 90%;
-            flex-wrap: wrap; /* 使得屏幕小的时候可以换行 */
-            height: 90%; /* 容器高度占屏幕80% */
+            flex-wrap: wrap;
         }
 
-        /* 3. 每个模块的样式，保持正方形大小 */
         .module {
-            width: 48%;  /* 保证每个模块不超过一半宽度 */
-            aspect-ratio: 1; /* 保证正方形的比例 */
+            width: 48%;
+            aspect-ratio: 1;
             padding: 20px;
             border-radius: 10px;
             background: white;
@@ -46,10 +41,9 @@
             justify-content: flex-start;
             align-items: center;
             box-sizing: border-box;
-            overflow: hidden; /* 确保不被遮挡 */
+            overflow: hidden;
         }
 
-        /* 标题样式 */
         .module h1 {
             text-align: center;
             margin-bottom: 20px;
@@ -57,7 +51,6 @@
             color: #007bff;
         }
 
-        /* 上传区域 */
         .drop-zone {
             width: 100%;
             height: 30%;
@@ -83,26 +76,17 @@
             color: #555;
         }
 
-        /* 文件列表样式 */
-        .file-preview {
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #007bff;
-            text-align: center;
-        }
-
-        /* 文件列表 */
         .file-list {
             margin-top: 10px;
             list-style: none;
             padding: 0;
             font-size: 0.9rem;
-            max-height: 459px; /* 限制高度 */
-            overflow-y: auto; /* 超出部分可滚动 */
+            max-height: 459px;
+            overflow-y: auto;
             background-color: #f9f9f9;
             border-radius: 5px;
             box-sizing: border-box;
-            width: 100%; /* 保证宽度填满模块 */
+            width: 100%;
         }
 
         .file-list li {
@@ -131,16 +115,11 @@
             font-size: 0.8rem;
             border-radius: 3px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
-        .file-list li .remove-btn:hover {
-            background-color: #d32f2f;
-        }
-
-        /* 按钮样式 */
         .upload-button,
         .view-button {
+            margin-top: 20px;
             padding: 10px 20px;
             background: #007bff;
             color: white;
@@ -149,7 +128,6 @@
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: 20px;
         }
 
         .upload-button:hover,
@@ -157,7 +135,6 @@
             background-color: #0056b3;
         }
 
-        /* 显示提示信息 */
         .message {
             margin-top: 20px;
             font-size: 0.9rem;
@@ -171,26 +148,17 @@
             font-size: 0.9rem;
             border-radius: 3px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
-        .download-btn:hover {
-            background-color: #45a049;
-        }
-
-        /* 媒体查询：适应小屏幕，保证正方形模块 */
+        /* 媒体查询：适应小屏幕 */
         @media (max-width: 768px) {
             .container {
-                width: 100%;
-                height: 100%;
-                justify-content: center;
-                align-items: center;
                 flex-direction: column;
             }
 
             .module {
                 width: 80%;
-                aspect-ratio: 1; /* 保持正方形 */
+                aspect-ratio: 1;
             }
         }
 
@@ -203,7 +171,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- 文件上传模块 -->
         <div class="module">
             <h1>文件上传</h1>
             <div class="drop-zone" id="drop-zone">
@@ -212,65 +179,44 @@
             <input type="file" id="file-input" class="file-input" accept=".zip,.rar" style="display: none;" multiple>
             <button class="upload-button" id="upload-button" disabled>上传文件</button>
             <p class="message" id="message"></p>
-            <ul class="file-list" id="file-list"></ul>  <!-- 用于显示文件列表 -->
-        </div>
-
-        <!-- 查看文件模块 -->
-        <div class="module">
-            <h1>查看文件</h1>
-            <button class="view-button" id="view-button">查看上传文件</button>
-            <!-- 查看文件列表放在标题和按钮之间，支持滚动 -->
-            <ul class="file-list" id="server-file-list"></ul>  <!-- 用于显示服务器文件列表 -->
+            <ul class="file-list" id="file-list"></ul>
         </div>
     </div>
 
     <script>
+        // 文件上传功能的JS代码
         window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const response = await fetch('https://www.yexieman.com/serverApi/checkLogin', {
-                    method: 'GET',
-                    credentials: 'include',  // 确保发送 Cookie（如果有的话）
-                });
-                console.log('登录检查失败：', error);
-                alert('response', response)
-                if (response.status==200) {
-                    // 用户已登录，继续执行上传操作
-                    const data = await response.json();
-                    alert('data', data)
-                    if (data.message === "已登录") {
-                        console.log("用户已登录");
-                    } else {
-                        console.log('用户未登录，重定向到登录页面');
-                        window.location.href = 'http://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
-                    }
-                } else {
-                    // 用户未登录，重定向到登录页面
-                    console.log('用户未登录，重定向到登录页面', error);
-                    window.location.href = 'http://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+            // 认证检查（登录验证）
+            fetch('https://www.yexieman.com/serverApi/checkLogin', {
+                method: 'GET',
+                credentials: 'include',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message !== "已登录") {
+                    window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
                 }
-            } catch (error) {
-                // 请求失败，处理错误
-                console.log('登录检查失败：', error);
-                alert('登录检查失败：', error)
-                message.textContent = '登录检查失败，请重试。';
-                window.location.href = 'http://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
-            }
+            })
+            .catch(error => {
+                window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+            });
         });
+
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
-        const fileList = document.getElementById('file-list'); // 用于展示文件
+        const fileList = document.getElementById('file-list');
         const uploadButton = document.getElementById('upload-button');
         const message = document.getElementById('message');
-        let selectedFiles = [];  // 用数组存储选择的文件
+        let selectedFiles = [];  // 存储选择的文件
 
-        // Handle drag events
+        // 处理文件拖放事件
         dropZone.addEventListener('dragover', (event) => {
             event.preventDefault();
             dropZone.classList.add('dragover');
         });
 
         dropZone.addEventListener('click', () => {
-            fileInput.click();  // 点击区域时，触发文件输入框
+            fileInput.click();
         });
 
         dropZone.addEventListener('dragleave', () => {
@@ -283,12 +229,10 @@
             handleFileSelection(event.dataTransfer.files);
         });
 
-        // Handle file input change
         fileInput.addEventListener('change', () => {
             handleFileSelection(fileInput.files);
         });
 
-        // Handle file selection logic
         function handleFileSelection(files,dele=false) {
             const newFiles = Array.from(files);  // 转换文件为数组
 
@@ -324,23 +268,19 @@
             });
         }
 
-        // 移除文件按钮点击事件
-        fileList.addEventListener('click', (event) => {
-            if (event.target.classList.contains('remove-btn')) {
-                const index = event.target.dataset.index;
-                // 从 selectedFiles 中移除对应的文件
-                selectedFiles.splice(index, 1);
-                // 更新文件列表
-                handleFileSelection(selectedFiles,true);
-            }
-        });
-
         // Truncate file name for display
         function truncateFileName(fileName) {
             return fileName.length > 15 ? fileName.slice(0, 10) + '...' + fileName.slice(-5) : fileName;
         }
 
-        // Upload file
+        fileList.addEventListener('click', (event) => {
+            if (event.target.classList.contains('remove-btn')) {
+                const index = event.target.dataset.index;
+                selectedFiles.splice(index, 1);
+                handleFileSelection(selectedFiles);
+            }
+        });
+
         uploadButton.addEventListener('click', async () => {
             if (selectedFiles.length === 0) {
                 message.textContent = "请先选择文件！";
@@ -354,14 +294,14 @@
 
             try {
                 message.textContent = "正在上传，请稍候...";
-                const response = await fetch('http://47.101.195.52/toolServer/upload', {
+                const response = await fetch('https://www.yexieman.com/toolServer/upload', {
                     method: 'POST',
                     body: formData,
                 });
 
                 const result = await response.json();
                 if (response.ok) {
-                    message.textContent = `上传成功：${result.files.map(truncateFileName).join(', ')}`;
+                    message.textContent = `上传成功：${result.files.map(file => file.name).join(', ')}`;
                     selectedFiles = [];
                     fileList.innerHTML = '';
                     uploadButton.disabled = true;
@@ -370,46 +310,6 @@
                 }
             } catch (error) {
                 message.textContent = `上传失败：${error.message}`;
-            }
-        });
-
-        // View uploaded files
-        const viewButton = document.getElementById('view-button');
-        const serverFileList = document.getElementById('server-file-list');
-
-        viewButton.addEventListener('click', async () => {
-            try {
-                const response = await fetch('http://47.101.195.52/toolServer/listFiles');
-                const files = await response.json();
-
-                if (response.ok) {
-                    serverFileList.innerHTML = '';  // Clear current list
-                    files.forEach((file) => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `${file} <button class="download-btn" data-file="${file}">下载</button>`;
-                        serverFileList.appendChild(listItem);
-                    });
-                } else {
-                    serverFileList.innerHTML = '获取文件列表失败';
-                }
-            } catch (error) {
-                serverFileList.innerHTML = `获取文件列表失败：${error.message}`;
-            }
-        });
-
-        // Download file
-        serverFileList.addEventListener('click', (event) => {
-            if (event.target.classList.contains('download-btn')) {
-                const button = event.target;
-                const fileName = button.dataset.file;
-
-                // 禁用按钮并修改样式
-                button.disabled = true;
-                button.style.backgroundColor = '#ccc';  // 改为灰色
-                button.textContent = '已下载';  // 更改按钮文字
-                button.style.cursor = 'not-allowed';  // 更改鼠标样式为不可点击
-                const url = `http://47.101.195.52/toolServer/download?file=${fileName}`;
-                window.location.href = url;  // Trigger download
             }
         });
     </script>
