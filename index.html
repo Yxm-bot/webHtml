@@ -160,22 +160,22 @@
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // window.addEventListener('DOMContentLoaded', async () => {
-        //     // 认证检查（登录验证）
-        //     fetch('https://www.yexieman.com/serverApi/checkLogin', {
-        //         method: 'GET',
-        //         credentials: 'include',
-        //     })
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         if (data.message !== "已登录") {
-        //             window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
-        //         }
-        //     })
-        //     .catch(error => {
-        //         window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
-        //     });
-        // });
+        window.addEventListener('DOMContentLoaded', async () => {
+         // 认证检查（登录验证）
+             fetch('https://www.yexieman.com/serverApi/checkLogin', {
+           method: 'GET',
+                 credentials: 'include',
+            })
+             .then(response => response.json())
+             .then(data => {
+                 if (data.message !== "已登录") {
+                     window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+                 }
+             })
+             .catch(error => {
+                 window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+             });
+         });
         // 初始化粒子背景效果
         particlesJS('particles-js', {
             particles: {
