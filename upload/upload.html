@@ -5,16 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文件上传</title>
     <style>
-        /* 页面背景、布局和居中 */
-        body {
-            font-family: Arial, sans-serif;
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
             background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
         }
 
         .container {
@@ -29,8 +33,9 @@
         }
 
         .module {
-            width: 48%;
+            width: 70%;
             aspect-ratio: 1;
+            height: 500px;
             padding: 20px;
             border-radius: 10px;
             background: white;
@@ -38,7 +43,7 @@
             border: 2px solid #007bff;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
             box-sizing: border-box;
             overflow: hidden;
@@ -46,126 +51,97 @@
 
         .module h1 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-top: 0px;
             font-size: 1.5rem;
             color: #007bff;
         }
 
+        .directory-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .directory-container label {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .directory-container select {
+            padding: 5px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #007bff;
+            width: 100%;
+            max-width: 200px;
+        }
+
         .drop-zone {
             width: 100%;
-            height: 30%;
-            border: 4px dashed #007bff;
-            border-radius: 10px;
+            height: 120px;
+            background-color: #e0e7ff;
+            border-radius: 8px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            background-color: #f9f9f9;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 2px dashed #007bff;
+            color: #007bff;
+            font-size: 1.2rem;
+            text-align: center;
             cursor: pointer;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .drop-zone.dragover {
-            background-color: #e0f7ff;
-            border-color: #0056b3;
-        }
-
-        .drop-zone p {
-            margin: 0;
-            font-size: 1rem;
-            color: #555;
         }
 
         .file-list {
-            margin-top: 10px;
-            list-style: none;
-            padding: 0;
-            font-size: 0.9rem;
-            max-height: 459px;
-            overflow-y: auto;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            box-sizing: border-box;
             width: 100%;
+            height: 350px;
+            overflow-y: auto;
+            margin-top: 0px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         .file-list li {
-            background: #f0f8ff;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-            padding: 8px;
-            margin-bottom: 8px;
-            color: #007bff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1rem;
+            margin-bottom: 10px;
         }
 
-        .file-list li:hover {
-            background: #e0f7ff;
-            cursor: pointer;
-        }
-
-        .file-list li .remove-btn {
-            background-color: #f44336;
+        .remove-btn {
+            background-color: #ff4444;
             color: white;
             border: none;
-            padding: 5px;
-            font-size: 0.8rem;
-            border-radius: 3px;
+            padding: 5px 10px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        .upload-button,
-        .view-button {
-            margin-top: 20px;
+        .remove-btn:hover {
+            background-color: #ff2222;
+        }
+
+        .upload-button {
+            background-color: #007bff;
+            color: white;
             padding: 10px 20px;
-            background: #007bff;
-            color: white;
             border: none;
             border-radius: 5px;
-            font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            font-size: 1rem;
+            margin-top: 0px;
         }
 
-        .upload-button:hover,
-        .view-button:hover {
-            background-color: #0056b3;
+        .upload-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
 
         .message {
             margin-top: 20px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #333;
-        }
-
-        .download-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        /* 媒体查询：适应小屏幕 */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .module {
-                width: 80%;
-                aspect-ratio: 1;
-            }
-        }
-
-        @media (max-width: 500px) {
-            .module {
-                width: 90%;
-            }
         }
     </style>
 </head>
@@ -173,10 +149,21 @@
     <div class="container">
         <div class="module">
             <h1>文件上传</h1>
+
+            <!-- 选择目录的下拉框 -->
+            <div class="directory-container">
+                <label for="directory-select">选择目录：</label>
+                <select id="directory-select">
+                    <option value="">请选择目录</option>
+                    <!-- 目录选项会通过 JavaScript 动态生成 -->
+                </select>
+            </div>
+
             <div class="drop-zone" id="drop-zone">
                 <p>拖动文件到此处，或点击选择上传</p>
             </div>
-            <input type="file" id="file-input" class="file-input" accept=".zip,.rar" style="display: none;" multiple>
+
+            <input type="file" id="file-input" class="file-input" accept=".zip,.rar,.png,.jpg" style="display: none;" multiple>
             <button class="upload-button" id="upload-button" disabled>上传文件</button>
             <p class="message" id="message"></p>
             <ul class="file-list" id="file-list"></ul>
@@ -184,7 +171,6 @@
     </div>
 
     <script>
-        // 文件上传功能的JS代码
         window.addEventListener('DOMContentLoaded', async () => {
             // 认证检查（登录验证）
             fetch('https://www.yexieman.com/serverApi/checkLogin', {
@@ -200,6 +186,23 @@
             .catch(error => {
                 window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
             });
+
+            // 获取目录列表并填充到下拉框
+            const directorySelect = document.getElementById('directory-select');
+            try {
+                const response = await fetch('https://www.yexieman.com/toolServer/getDirectories', {
+                    method: 'GET',
+                });
+                const directories = await response.json();
+                directories.forEach(dir => {
+                    const option = document.createElement('option');
+                    option.value = dir;
+                    option.textContent = dir;
+                    directorySelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error("获取目录失败:", error);
+            }
         });
 
         const dropZone = document.getElementById('drop-zone');
@@ -207,6 +210,7 @@
         const fileList = document.getElementById('file-list');
         const uploadButton = document.getElementById('upload-button');
         const message = document.getElementById('message');
+        const directorySelect = document.getElementById('directory-select');  // 获取目录选择下拉框
         let selectedFiles = [];  // 存储选择的文件
 
         // 处理文件拖放事件
@@ -224,106 +228,107 @@
         });
 
         dropZone.addEventListener('drop', (event) => {
+            console.log("handleFileSelection==drop==")
             event.preventDefault();
             dropZone.classList.remove('dragover');
             handleFileSelection(event.dataTransfer.files);
         });
 
         fileInput.addEventListener('change', () => {
+            console.log("handleFileSelection==change==")
+            if (fileInput.files.length === 0) return;
             handleFileSelection(fileInput.files);
+            fileInput.value = '';
         });
 
-        function handleFileSelection(files,dele=false) {
+        function handleFileSelection(files) {
+            console.log("handleFileSelection==",selectedFiles)
             const newFiles = Array.from(files);  // 转换文件为数组
 
             // 定义支持的文件类型
             const allowedTypes = ['.zip', '.rar', '.png', '.jpg'];
-
-            // 过滤掉不符合条件的文件
             const validFiles = newFiles.filter(file => {
                 const ext = file.name.slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 2);
                 return allowedTypes.includes('.' + ext.toLowerCase());
             });
 
+            selectedFiles = [...selectedFiles, ...validFiles];  // 添加新选择的文件
             if (validFiles.length !== newFiles.length) {
-                message.textContent = '只支持上传 .zip、.rar、.png 或 .jpg 文件';
-            }
-
-            if (dele) {
-                // 清空当前选中的文件并添加新文件
-                selectedFiles = newFiles;
+                message.textContent = `不支持格式，已忽略：${newFiles.length - validFiles.length} 个文件`;
             } else {
-                // 遍历新文件，检查是否已经存在于 selectedFiles 中
-                const existingFiles = newFiles.filter(file => {
-                    return selectedFiles.some(existingFile => existingFile.name === file.name);
-                });
-
-                // 如果有重复文件，提示用户
-                if (existingFiles.length > 0) {
-                    const duplicateFileNames = existingFiles.map(file => file.name).join(', ');
-                    message.textContent = `提示：文件 "${duplicateFileNames}" 已在列表中。`;
-                } else {
-                    message.textContent = `已选择文件：${selectedFiles.length + newFiles.length} 个`;
-                }
-
-                // 添加新文件，不包含已存在的文件
-                selectedFiles = selectedFiles.concat(newFiles.filter(file => !selectedFiles.some(existingFile => existingFile.name === file.name)));
+                message.textContent = `当前拖动的文件：${selectedFiles.length} 个`;
             }
+            console.log("err==",selectedFiles)
+            updateFileList();  // 更新文件列表
+        }
 
-            // 更新文件列表
-            uploadButton.disabled = selectedFiles.length === 0;  // 如果没有文件，禁用上传按钮
-            fileList.innerHTML = '';
+        function updateFileList() {
+            fileList.innerHTML = '';  // 清空文件列表
             selectedFiles.forEach((file, index) => {
                 const listItem = document.createElement('li');
-                listItem.textContent = truncateFileName(file.name);
-                listItem.innerHTML += ` <button class="remove-btn" data-index="${index}">移除</button>`;
+                listItem.style.display = 'flex';  // 使用flex布局
+                listItem.style.justifyContent = 'space-between';  // 文件名左对齐，删除按钮右对齐
+                listItem.style.alignItems = 'center';  // 垂直居中对齐
+
+                const fileName = file.name.slice(0, 10);  // 截取文件名前10个字符
+                const fileNameSpan = document.createElement('span');
+                fileNameSpan.textContent = fileName;  // 设置文件名
+                fileNameSpan.style.textAlign = 'left';  // 确保文件名左对齐
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '删除';
+                removeBtn.classList.add('remove-btn');
+                removeBtn.addEventListener('click', () => {
+                    console.log("removeBtn==",index)
+                    selectedFiles.splice(index, 1);  // 删除文件
+                    if(selectedFiles.length==0){
+                        message.textContent = `暂未拖动文件`;
+                    }else{
+                        message.textContent = `当前拖动的文件：${selectedFiles.length} 个`;
+                    }
+                    updateFileList();  // 更新显示
+                });
+
+                listItem.appendChild(fileNameSpan);
+                listItem.appendChild(removeBtn);
                 fileList.appendChild(listItem);
             });
+
+            // 如果没有文件选中，禁用上传按钮
+            uploadButton.disabled = selectedFiles.length === 0;
         }
 
-        // Truncate file name for display
-        function truncateFileName(fileName) {
-            return fileName.length > 15 ? fileName.slice(0, 10) + '...' + fileName.slice(-5) : fileName;
-        }
-
-        fileList.addEventListener('click', (event) => {
-            if (event.target.classList.contains('remove-btn')) {
-                const index = event.target.dataset.index;
-                selectedFiles.splice(index, 1);
-                handleFileSelection(selectedFiles);
-            }
-        });
-
+        // 上传按钮点击事件
         uploadButton.addEventListener('click', async () => {
-            if (selectedFiles.length === 0) {
-                message.textContent = "请先选择文件！";
+            const selectedDirectory = directorySelect.value;  // 获取当前选中的目录
+            if (!selectedDirectory) {
+                message.textContent = '请选择目录';
                 return;
             }
 
+            // 构造表单数据并上传文件
             const formData = new FormData();
-            selectedFiles.forEach((file) => {
-                formData.append('file', file);
-            });
+            selectedFiles.forEach(file => formData.append('file', file));
+            formData.append('directory', selectedDirectory);
 
             try {
-                message.textContent = "正在上传，请稍候...";
                 const response = await fetch('https://www.yexieman.com/toolServer/upload', {
                     method: 'POST',
                     body: formData,
                 });
-
                 const result = await response.json();
-                if (response.ok) {
-                    message.textContent = `上传成功：${result.files.map(file => file.name).join(', ')}`;
-                    selectedFiles = [];
-                    fileList.innerHTML = '';
-                    uploadButton.disabled = true;
+                console.log("=result===result",result)
+                if (result.status == 'success') {
+                    message.textContent = '文件上传成功！';
                 } else {
-                    message.textContent = `上传失败：${result.error}`;
+                    message.textContent = '上传失败，请稍后再试。';
                 }
             } catch (error) {
-                message.textContent = `上传失败：${error.message}`;
+                message.textContent = '上传失败，请重试';
             }
+            // 清空文件列表
+            selectedFiles = [];
+            updateFileList();  // 更新页面上的文件列表
         });
     </script>
 </body>
