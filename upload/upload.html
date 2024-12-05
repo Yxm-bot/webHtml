@@ -236,6 +236,19 @@
         function handleFileSelection(files,dele=false) {
             const newFiles = Array.from(files);  // 转换文件为数组
 
+            // 定义支持的文件类型
+            const allowedTypes = ['.zip', '.rar', '.png', '.jpg'];
+
+            // 过滤掉不符合条件的文件
+            const validFiles = newFiles.filter(file => {
+                const ext = file.name.slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 2);
+                return allowedTypes.includes('.' + ext.toLowerCase());
+            });
+
+            if (validFiles.length !== newFiles.length) {
+                message.textContent = '只支持上传 .zip、.rar、.png 或 .jpg 文件';
+            }
+
             if (dele) {
                 // 清空当前选中的文件并添加新文件
                 selectedFiles = newFiles;
