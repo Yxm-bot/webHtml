@@ -56,6 +56,48 @@
             color: #007bff;
         }
 
+        
+        /* 二级界面（遮罩层） */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .upload-status {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .upload-status p {
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .directory-container {
             display: flex;
             align-items: center;
@@ -170,6 +212,14 @@
         </div>
     </div>
 
+    <!-- 二级界面层 -->
+    <div class="overlay" id="overlay">
+        <div class="upload-status">
+            <p>正在上传文件，请稍候...</p>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
     <script>
         window.addEventListener('DOMContentLoaded', async () => {
             // 认证检查（登录验证）
@@ -210,6 +260,7 @@
         const fileList = document.getElementById('file-list');
         const uploadButton = document.getElementById('upload-button');
         const message = document.getElementById('message');
+        const overlay = document.getElementById('overlay');
         const directorySelect = document.getElementById('directory-select');  // 获取目录选择下拉框
         let selectedFiles = [];  // 存储选择的文件
 
@@ -246,7 +297,7 @@
             const newFiles = Array.from(files);  // 转换文件为数组
 
             // 定义支持的文件类型
-            const allowedTypes = ['.zip', '.rar', '.png', '.jpg'];
+            const allowedTypes = ['.zip', '.rar', '.png', '.jpg', '.mp4', '.mp3'];
             const validFiles = newFiles.filter(file => {
                 const ext = file.name.slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 2);
                 return allowedTypes.includes('.' + ext.toLowerCase());
@@ -256,7 +307,7 @@
             if (validFiles.length !== newFiles.length) {
                 message.textContent = `不支持格式，已忽略：${newFiles.length - validFiles.length} 个文件`;
             } else {
-                message.textContent = `当前拖动的文件：${selectedFiles.length} 个`;
+                message.textContent =`当前拖动的文件：${selectedFiles.length} 个`;
             }
             console.log("err==",selectedFiles)
             updateFileList();  // 更新文件列表
@@ -305,7 +356,7 @@
                 message.textContent = '请选择目录';
                 return;
             }
-
+            overlay.style.display = 'flex';  // 显示二级界面
             // 构造表单数据并上传文件
             const formData = new FormData();
             selectedFiles.forEach(file => formData.append('file', file));
@@ -325,11 +376,14 @@
                 }
             } catch (error) {
                 message.textContent = '上传失败，请重试';
+            }finally {
+                overlay.style.display = 'none';  // 隐藏二级界面
             }
             // 清空文件列表
             selectedFiles = [];
             updateFileList();  // 更新页面上的文件列表
         });
+
     </script>
 </body>
 </html>
