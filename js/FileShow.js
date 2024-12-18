@@ -56,7 +56,7 @@ async function fetchFiles() {
         message.textContent = '请选择目录!';
         return;
     }
-
+    message.textContent = '';
     const response = await fetch(`https://www.yexieman.com/toolServer/getFiles?dir=${dir}`);
     const files = await response.json();
 
@@ -151,7 +151,7 @@ async function fetchFiles() {
                 imgContainer.style.width = '100%';  // 使其充满父容器
                 imgContainer.style.height = '100%';  // 使其充满父容器
                 imgContainer.style.overflow = 'hidden';  // 防止溢出
-                imgContainer.style.marginTop = '-10px';
+                imgContainer.style.marginTop = '0px';
                 imgContainer.appendChild(img);  // 添加封面图
                 imgContainer.appendChild(playIcon);  // 添加播放图标
                 fileItem.appendChild(imgContainer);
@@ -173,7 +173,7 @@ async function fetchFiles() {
                 if((img.width/img.height)>=1){
                    img.style.marginTop = '25px';
                 }else{
-                    img.style.marginTop = '-20px';
+                    img.style.marginTop = '0px';
                 }
                 console.log("img==",img.width,img.height,img.width/img.height)
             }
@@ -194,7 +194,7 @@ async function fetchFiles() {
             const img = document.createElement('img');
             img.src = `https://www.yexieman.com/img/mp3.png`; // 直接使用 url
             img.alt = file.name;
-            img.style.marginTop = '25px';
+            img.style.marginTop = '20px';
             fileItem.appendChild(img);
         }
     });

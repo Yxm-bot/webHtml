@@ -137,6 +137,7 @@ uploadButton.addEventListener('click', async () => {
         message.textContent = '请选择目录';
         return;
     }
+    message.textContent = '';
     overlay.style.display = 'flex';  // 显示二级界面
     // 构造表单数据并上传文件
     const formData = new FormData();
