@@ -25,7 +25,9 @@ const message = document.getElementById('message');
 const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modal-message');
 const downloadButton = document.getElementById('download-btn');
-const cancelButton = document.getElementById('cancel-btn');
+const cancelButton = document.getElementById('close-btn');
+const deleteButton = document.getElementById('delete-btn');
+const overlay = document.getElementById('overlay');
 let selectedFile = null;
 
 // 获取目录列表
@@ -203,7 +205,7 @@ async function fetchFiles() {
 // 打开下载确认对话框
 function openModal(fileName) {
     selectedFile = fileName;
-    modalMessage.textContent = `是否下载 ${fileName}?`;
+    modalMessage.textContent = `${fileName}?`;
     modal.style.display = 'flex';
 }
 
@@ -212,6 +214,41 @@ cancelButton.onclick = () => {
     modal.style.display = 'none';
     selectedFile = null;
 };
+
+// 删除文件
+deleteButton.addEventListener('click',async () => {
+    console.log("deleteButton===",selectedFile)
+    if(selectedFile){
+        hideVideo(overlay)
+        // overlay.style.display = 'flex';  // 显示二级界面
+        try {
+            const response = await fetch('https://www.yexieman.com/toolServer/deleteFile', {
+                method: 'POST',
+                body: JSON.stringify({
+                    dir:dirSelect.value,
+                    file_path: selectedFile
+                })
+            });
+            const result = await response.json();
+            console.log("=result===result",result)
+            if (result.status == 'success') {
+                message.textContent = '删除文件成功！';
+            } else {
+                message.textContent = '删除失败';
+            }
+        } catch (error) {
+            message.textContent = '删除失败';
+        }finally {
+            // overlay.style.display = 'none';  // 隐藏二级界面
+            // modal.style.display = 'none';
+            hideVideo(modal)
+            hideVideo(overlay)
+            fetchFiles()
+        }
+    }   
+    selectedFile = null;
+});
+
 
 // 下载文件
 downloadButton.onclick = () => {
@@ -231,6 +268,20 @@ downloadButton.onclick = () => {
     modal.style.display = 'none';
     selectedFile = null;
 };
+
+function hideVideo(video) {
+    video.style.transition = "opacity 0.3s ease";
+    video.style.opacity = "0";  // 使视频渐隐
+    setTimeout(() => {
+        video.style.visibility = "hidden"; // 隐藏元素
+    }, 300); // 等待过渡完成后再隐藏元素
+}
+
+function showVideo(video) {
+    video.style.visibility = "visible";  // 显示元素
+    video.style.transition = "opacity 0.3s ease";
+    video.style.opacity = "1";  // 渐显
+}
 
 // 初始化目录列表
 fetchDirectories();

@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>资源文件管理</title>
     <style>
+        button:focus,
+        a:focus,
+        input:focus {
+            outline: none;
+            box-shadow: none; /* 移除焦点框及其他阴影效果 */
+        }
+
+        /* 或者只在键盘焦点时显示 */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* 移除触摸设备上的高亮框 */
+        button,
+        a,
+        input {
+            -webkit-tap-highlight-color: transparent;
+        }
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f7fc;
@@ -104,13 +125,18 @@
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
             background-color: #fff;
             padding: 20px;
             text-align: center;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-width: 90%; /* 防止超出小屏幕 */
+            min-width: 300px; /* 保证足够的内容显示宽度 */
         }
+
         .modal-content button {
             margin: 10px;
             padding: 12px 24px;
@@ -119,17 +145,98 @@
             border: none;
             border-radius: 6px;
         }
+
         #download-btn {
             background-color: #007bff;
             color: white;
         }
-        #cancel-btn {
-            background-color: #ccc;
-            color: white;
+
+        #delete-btn {
+            background-color: #ff0000;
+            color: rgb(255, 255, 255);
         }
+
         #modal-message {
             font-size: 18px;
             margin-bottom: 20px;
+        }
+
+        /* 优化关闭按钮样式，放大两倍 */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 48px; /* 放大两倍 */
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #ff0000; /* 鼠标悬停时变为红色 */
+            transform: scale(1.1); /* 鼠标悬停时放大 */
+        }
+
+        .close-btn:active {
+            transform: scale(0.9); /* 点击时缩小 */
+        }
+
+        /* 响应式适配 */
+        @media screen and (max-width: 600px) {
+            .modal-content {
+                width: 90%;
+                padding: 15px;
+            }
+
+            .close-btn {
+                font-size: 40px; /* 小屏幕调整为稍小的字体 */
+                top: 5px;
+                right: 5px;
+            }
+        }
+
+                /* 二级界面（遮罩层） */
+                .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .upload-status {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .upload-status p {
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -153,9 +260,18 @@
     <!-- Modal -->
     <div id="modal" class="modal">
         <div class="modal-content">
+            <button id="close-btn" class="close-btn" aria-label="关闭">&times;</button>
             <p id="modal-message">是否下载该文件?</p>
             <button id="download-btn">下载</button>
-            <button id="cancel-btn">取消</button>
+            <button id="delete-btn">删除</button>
+        </div>
+    </div>
+
+    <!-- 二级界面层 -->
+    <div class="overlay" id="overlay">
+        <div class="upload-status">
+            <p>正在上传文件，请稍候...</p>
+            <div class="loading-spinner"></div>
         </div>
     </div>
     <script src="../js/FileShow.js"></script>

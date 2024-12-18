@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>资源文件管理</title>
     <style>
+        button:focus,
+        a:focus,
+        input:focus {
+            outline: none;
+            box-shadow: none; /* 移除焦点框及其他阴影效果 */
+        }
+
+        /* 或者只在键盘焦点时显示 */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* 移除触摸设备上的高亮框 */
+        button,
+        a,
+        input {
+            -webkit-tap-highlight-color: transparent;
+        }
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f7fc;

@@ -98,7 +98,8 @@ function updateFileList() {
     fileList.innerHTML = '';  // 清空文件列表
     selectedFiles.forEach((file, index) => {
         const listItem = document.createElement('li');
-        listItem.style.display = 'flex';  // 使用flex布局
+        //listItem.style.display = 'flex';  // 使用flex布局
+        overlay(listItem)
         listItem.style.justifyContent = 'space-between';  // 文件名左对齐，删除按钮右对齐
         listItem.style.alignItems = 'center';  // 垂直居中对齐
 
@@ -138,7 +139,8 @@ uploadButton.addEventListener('click', async () => {
         return;
     }
     message.textContent = '';
-    overlay.style.display = 'flex';  // 显示二级界面
+    //overlay.style.display = 'flex';  // 显示二级界面
+    showVideo(overlay)
     // 构造表单数据并上传文件
     const formData = new FormData();
     selectedFiles.forEach(file => formData.append('file', file));
@@ -159,9 +161,24 @@ uploadButton.addEventListener('click', async () => {
     } catch (error) {
         message.textContent = '上传失败，请重试';
     }finally {
-        overlay.style.display = 'none';  // 隐藏二级界面
+        //overlay.style.display = 'none';  // 隐藏二级界面
+        hideVideo(overlay)
     }
     // 清空文件列表
     selectedFiles = [];
     updateFileList();  // 更新页面上的文件列表
 });
+
+function hideVideo(video) {
+    video.style.transition = "opacity 0.3s ease";
+    video.style.opacity = "0";  // 使视频渐隐
+    setTimeout(() => {
+        video.style.visibility = "hidden"; // 隐藏元素
+    }, 300); // 等待过渡完成后再隐藏元素
+}
+
+function showVideo(video) {
+    video.style.visibility = "visible";  // 显示元素
+    video.style.transition = "opacity 0.3s ease";
+    video.style.opacity = "1";  // 渐显
+}

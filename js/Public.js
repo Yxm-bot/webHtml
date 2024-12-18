@@ -48,7 +48,8 @@ async function fetchFiles() {
             // 获取视频封面
             const video = document.createElement('video');
             video.src = `https://www.yexieman.com${file.string}`; // 确保路径正确
-            video.style.display = 'none'; // 隐藏视频元素
+           // video.style.display = 'none'; // 隐藏视频元素
+            hideVideo(video)
             video.muted=true
             video.autoplay=true
             // 使用 canvas 获取视频的第一帧作为封面
@@ -161,12 +162,14 @@ async function fetchFiles() {
 function openModal(fileName) {
     selectedFile = fileName;
     modalMessage.textContent = `是否下载 ${fileName}?`;
-    modal.style.display = 'flex';
+    //modal.style.display = 'flex';
+    showVideo(modal)
 }
 
 // 关闭模态框
 cancelButton.onclick = () => {
-    modal.style.display = 'none';
+    //modal.style.display = 'none';
+    hideVideo(modal)
     selectedFile = null;
 };
 
@@ -185,9 +188,24 @@ downloadButton.onclick = () => {
         downloadLink.click();
         document.body.removeChild(downloadLink);
     }
-    modal.style.display = 'none';
+    //modal.style.display = 'none';
+    hideVideo(modal)
     selectedFile = null;
 };
+
+function hideVideo(video) {
+    video.style.transition = "opacity 0.3s ease";
+    video.style.opacity = "0";  // 使视频渐隐
+    setTimeout(() => {
+        video.style.visibility = "hidden"; // 隐藏元素
+    }, 300); // 等待过渡完成后再隐藏元素
+}
+
+function showVideo(video) {
+    video.style.visibility = "visible";  // 显示元素
+    video.style.transition = "opacity 0.3s ease";
+    video.style.opacity = "1";  // 渐显
+}
 
 
 // 设置获取文件按钮的点击事件
