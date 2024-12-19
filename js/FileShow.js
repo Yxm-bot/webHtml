@@ -20,6 +20,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 const fetchFilesButton = document.getElementById('fetch-files-btn');
 const dirSelect = document.getElementById('dir-select');
+const childSelect = document.getElementById('childDir-select');
 const fileList = document.getElementById('file-list');
 const message = document.getElementById('message');
 const modal = document.getElementById('modal');
@@ -27,8 +28,10 @@ const modalMessage = document.getElementById('modal-message');
 const downloadButton = document.getElementById('download-btn');
 const cancelButton = document.getElementById('close-btn');
 const deleteButton = document.getElementById('delete-btn');
+const openButton = document.getElementById('open-btn');
 const overlay = document.getElementById('overlay');
 let selectedFile = null;
+let curClickNode=null
 
 // 获取目录列表
 async function fetchDirectories() {
@@ -49,22 +52,53 @@ async function fetchDirectories() {
         option.textContent = dir;
         dirSelect.appendChild(option);
     });
+    dirSelect.addEventListener('change', function() {
+        fetchChildDirectories()
+      });
+}
+
+// 获取二级目录列表
+async function fetchChildDirectories() {
+    const response = await fetch(`https://www.yexieman.com/toolServer/getDirectories?dir=${dirSelect.value}`, {
+        method: 'GET',
+    });
+    const dirs = await response.json();
+
+    childSelect.innerHTML = ''; // 清空下拉框
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent =  '主目录';
+    childSelect.appendChild(defaultOption);
+    if(dirs){
+        dirs.forEach(dir => {
+            const option = document.createElement('option');
+            option.value = dir;
+            option.textContent = dir;
+            childSelect.appendChild(option);
+        });  
+    }
 }
 
 // 获取文件列表
 async function fetchFiles() {
-    const dir = dirSelect.value;
+    console.log("dirSelect.value===",childSelect.value)
+    dir=dirSelect.value
+    if(childSelect.value!=""){
+        dir=dir+"/"+childSelect.value
+    }
+    console.log("dir===",dir)
     if (!dir) {
         message.textContent = '请选择目录!';
         return;
     }
+    console.log("dir===dir===",dir)
     message.textContent = '';
     const response = await fetch(`https://www.yexieman.com/toolServer/getFiles?dir=${dir}`);
     const files = await response.json();
 
     // 清空之前的文件列表
     fileList.innerHTML = '';
-    if (files.length === 0) {
+    if (!files||files.length === 0) {
         message.textContent = '该目录没有文件';
         return;
     }
@@ -84,7 +118,14 @@ async function fetchFiles() {
         fileName.textContent = file.name.slice(0, 10);
         
         fileItem.appendChild(fileName);
-        fileItem.onclick = () => openModal(file.name);
+        fileItem.onclick = () => {
+            if(file.type=="image"){
+                curClickNode=fileItem
+            }else{
+                curClickNode=null
+            }
+            openModal(file.name,file.type);
+        }
         fileList.appendChild(fileItem);
         // 处理视频文件（MP4）
         if (file.type === 'video') {
@@ -198,19 +239,43 @@ async function fetchFiles() {
             img.alt = file.name;
             img.style.marginTop = '20px';
             fileItem.appendChild(img);
+        }else if (file.type === 'dir') {
+            const img = document.createElement('img');
+            img.src = `https://www.yexieman.com/img/dir.png`; // 直接使用 url
+            img.alt = file.name;
+            img.style.marginTop = '20px';
+            fileItem.appendChild(img);
         }
     });
 }
 
 // 打开下载确认对话框
-function openModal(fileName) {
+function openModal(fileName,type) {
     selectedFile = fileName;
     modalMessage.textContent = `${fileName}?`;
     modal.style.display = 'flex';
+    console.log('openModal type: ' + type);
+    if(type=="image"){
+        openButton.style.display = 'flex';
+    }else{
+        openButton.style.display = 'none';
+    }
 }
 
 // 关闭模态框
 cancelButton.onclick = () => {
+    modal.style.display = 'none';
+    selectedFile = null;
+};
+
+openButton.onclick = () => {
+    if(curClickNode!=null){
+        const img = curClickNode.querySelector('img');
+        if (img) {
+            const imgSrc = img.src;  // 获取 <img> 的 src 属性
+            window.open(imgSrc, '_blank'); // '_blank' 表示在新标签页中打开
+        }
+    }
     modal.style.display = 'none';
     selectedFile = null;
 };

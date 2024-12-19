@@ -98,8 +98,7 @@ function updateFileList() {
     fileList.innerHTML = '';  // 清空文件列表
     selectedFiles.forEach((file, index) => {
         const listItem = document.createElement('li');
-        //listItem.style.display = 'flex';  // 使用flex布局
-        overlay(listItem)
+        listItem.style.display = 'flex';  // 使用flex布局
         listItem.style.justifyContent = 'space-between';  // 文件名左对齐，删除按钮右对齐
         listItem.style.alignItems = 'center';  // 垂直居中对齐
 

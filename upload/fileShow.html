@@ -114,36 +114,44 @@
             color: #333;
             font-family: 'Roboto', sans-serif;
         }
-        .modal {
-            display: none;
+      /* Modal Overlay */
+      .modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
         }
 
+        /* Modal Content */
         .modal-content {
             background-color: #fff;
             padding: 20px;
-            text-align: center;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             position: relative;
-            max-width: 90%; /* 防止超出小屏幕 */
-            min-width: 300px; /* 保证足够的内容显示宽度 */
+            width: 400px;
+            max-width: 90%;
+        }
+        /* Button Group */
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .modal-content button {
-            margin: 10px;
-            padding: 12px 24px;
+        .modal-footer button {
+            padding: 10px 20px;
             font-size: 16px;
-            cursor: pointer;
             border: none;
             border-radius: 6px;
+            cursor: pointer;
         }
 
         #download-btn {
@@ -153,6 +161,11 @@
 
         #delete-btn {
             background-color: #ff0000;
+            color: rgb(255, 255, 255);
+        }
+
+        #open-btn {
+            background-color: #4c00ff;
             color: rgb(255, 255, 255);
         }
 
@@ -249,6 +262,11 @@
         <select id="dir-select">
             <option value="">加载中...</option>
         </select>
+
+        <label for="childDir-select">选择二级目录:</label>
+        <select id="childDir-select">
+            <option value="">加载中...</option>
+        </select>
     </div>
 
     <button id="fetch-files-btn">获取文件</button>
@@ -262,10 +280,12 @@
         <div class="modal-content">
             <button id="close-btn" class="close-btn" aria-label="关闭">&times;</button>
             <p id="modal-message">是否下载该文件?</p>
-            <button id="download-btn">下载</button>
-            <button id="delete-btn">删除</button>
-        </div>
-    </div>
+            <div class="modal-footer">
+                <button id="download-btn">下载</button>
+                <button id="delete-btn">删除</button>
+                <button id="open-btn">查看</button>
+            </div>
+         </div>
 
     <!-- 二级界面层 -->
     <div class="overlay" id="overlay">
