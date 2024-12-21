@@ -30,6 +30,7 @@ const cancelButton = document.getElementById('close-btn');
 const deleteButton = document.getElementById('delete-btn');
 const openButton = document.getElementById('open-btn');
 const overlay = document.getElementById('overlay');
+hideVideo(modal)
 let selectedFile = null;
 let curClickNode=null
 
@@ -212,6 +213,7 @@ async function fetchFiles() {
             const img = document.createElement('img');
             img.src = `https://www.yexieman.com${file.string}`; // 直接使用 url
             img.alt = file.name;
+            img.loading="lazy";
             img.onload = () => {
                 if((img.width/img.height)>=1){
                    img.style.marginTop = '25px';
@@ -253,7 +255,7 @@ async function fetchFiles() {
 function openModal(fileName,type) {
     selectedFile = fileName;
     modalMessage.textContent = `${fileName}?`;
-    modal.style.display = 'flex';
+    showVideo(modal)
     console.log('openModal type: ' + type);
     if(type=="image"){
         openButton.style.display = 'flex';
@@ -264,7 +266,7 @@ function openModal(fileName,type) {
 
 // 关闭模态框
 cancelButton.onclick = () => {
-    modal.style.display = 'none';
+    hideVideo(modal)
     selectedFile = null;
 };
 
@@ -276,7 +278,7 @@ openButton.onclick = () => {
             window.open(imgSrc, '_blank'); // '_blank' 表示在新标签页中打开
         }
     }
-    modal.style.display = 'none';
+    hideVideo(modal)
     selectedFile = null;
 };
 
@@ -286,11 +288,15 @@ deleteButton.addEventListener('click',async () => {
     if(selectedFile){
         hideVideo(overlay)
         // overlay.style.display = 'flex';  // 显示二级界面
+        let d=dirSelect.value
+        if(childSelect.value!=""){
+            d=d+"/"+childSelect.value
+        }
         try {
             const response = await fetch('https://www.yexieman.com/toolServer/deleteFile', {
                 method: 'POST',
                 body: JSON.stringify({
-                    dir:dirSelect.value,
+                    dir:d,
                     file_path: selectedFile
                 })
             });
@@ -335,6 +341,7 @@ downloadButton.onclick = () => {
 };
 
 function hideVideo(video) {
+    video.style.display = 'none';
     video.style.transition = "opacity 0.3s ease";
     video.style.opacity = "0";  // 使视频渐隐
     setTimeout(() => {
@@ -343,6 +350,7 @@ function hideVideo(video) {
 }
 
 function showVideo(video) {
+    video.style.display = 'flex';
     video.style.visibility = "visible";  // 显示元素
     video.style.transition = "opacity 0.3s ease";
     video.style.opacity = "1";  // 渐显
