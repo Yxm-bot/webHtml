@@ -30,7 +30,6 @@ const cancelButton = document.getElementById('close-btn');
 const deleteButton = document.getElementById('delete-btn');
 const openButton = document.getElementById('open-btn');
 const overlay = document.getElementById('overlay');
-hideVideo(modal)
 let selectedFile = null;
 let curClickNode=null
 
@@ -211,9 +210,8 @@ async function fetchFiles() {
             video.load();
         }else if (file.type === 'image') {
             const img = document.createElement('img');
-            img.src = `https://www.yexieman.com${file.string}`; // 直接使用 url
+            img.src = file.string; // 直接使用 url
             img.alt = file.name;
-            img.loading="lazy";
             img.onload = () => {
                 if((img.width/img.height)>=1){
                    img.style.marginTop = '25px';
@@ -278,8 +276,6 @@ openButton.onclick = () => {
             window.open(imgSrc, '_blank'); // '_blank' 表示在新标签页中打开
         }
     }
-    hideVideo(modal)
-    selectedFile = null;
 };
 
 // 删除文件
@@ -288,15 +284,15 @@ deleteButton.addEventListener('click',async () => {
     if(selectedFile){
         hideVideo(overlay)
         // overlay.style.display = 'flex';  // 显示二级界面
-        let d=dirSelect.value
-        if(childSelect.value!=""){
-            d=d+"/"+childSelect.value
-        }
         try {
+            let dir=dirSelect.value
+            if(childSelect.value!=""){
+                dir=dir+"/"+childSelect.value
+            }
             const response = await fetch('https://www.yexieman.com/toolServer/deleteFile', {
                 method: 'POST',
                 body: JSON.stringify({
-                    dir:d,
+                    dir:dir,
                     file_path: selectedFile
                 })
             });
@@ -341,9 +337,9 @@ downloadButton.onclick = () => {
 };
 
 function hideVideo(video) {
-    video.style.display = 'none';
     video.style.transition = "opacity 0.3s ease";
     video.style.opacity = "0";  // 使视频渐隐
+    video.style.display = 'none';
     setTimeout(() => {
         video.style.visibility = "hidden"; // 隐藏元素
     }, 300); // 等待过渡完成后再隐藏元素

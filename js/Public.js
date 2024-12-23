@@ -7,7 +7,7 @@ const downloadButton = document.getElementById('download-btn');
 const cancelButton = document.getElementById('cancel-btn');
 let selectedFile = null;
 
-const dir = "publicRes";
+const dir = "public";
 // 获取文件列表
 async function fetchFiles() {
     if (!dir) {
@@ -19,7 +19,7 @@ async function fetchFiles() {
 
     // 清空之前的文件列表
     fileList.innerHTML = '';
-    if (files.length === 0) {
+    if (!files||files.length === 0) {
         message.textContent = '该目录没有文件';
         return;
     }
@@ -199,12 +199,14 @@ function hideVideo(video) {
     setTimeout(() => {
         video.style.visibility = "hidden"; // 隐藏元素
     }, 300); // 等待过渡完成后再隐藏元素
+    video.style.display = 'none';
 }
 
 function showVideo(video) {
     video.style.visibility = "visible";  // 显示元素
     video.style.transition = "opacity 0.3s ease";
     video.style.opacity = "1";  // 渐显
+    video.style.display = 'flex';
 }
 
 
