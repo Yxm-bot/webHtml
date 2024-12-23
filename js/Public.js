@@ -199,12 +199,14 @@ function hideVideo(video) {
     setTimeout(() => {
         video.style.visibility = "hidden"; // 隐藏元素
     }, 300); // 等待过渡完成后再隐藏元素
+    video.style.display = 'none';
 }
 
 function showVideo(video) {
     video.style.visibility = "visible";  // 显示元素
     video.style.transition = "opacity 0.3s ease";
     video.style.opacity = "1";  // 渐显
+    video.style.display = 'flex';
 }
 
 
