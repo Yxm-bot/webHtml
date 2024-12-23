@@ -325,8 +325,12 @@ deleteButton.addEventListener('click',async () => {
 downloadButton.onclick = () => {
     if (selectedFile) {
         // 通过HTTP请求下载文件
+        let d=dirSelect.value
+        if(childSelect.value!=""){
+            d=d+"/"+childSelect.value
+        }
         const dir = dirSelect.value;  // 假设 dirSelect 是存储选择目录的元素
-        const url = `https://www.yexieman.com/toolServer/downloadFile?dir=${encodeURIComponent(dir)}&file=${encodeURIComponent(selectedFile)}`;
+        const url = `https://www.yexieman.com/toolServer/downloadFile?dir=${encodeURIComponent(d)}&file=${encodeURIComponent(selectedFile)}`;
         
         // 创建一个隐藏的下载链接，模拟点击实现文件下载
         const downloadLink = document.createElement('a');
