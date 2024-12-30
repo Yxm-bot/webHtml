@@ -112,8 +112,32 @@
         }
 
         .directory-container select {
+            color: #949090;
             padding: 5px;
             font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #007bff;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .directory-operation {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .directory-operation label {
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        .directory-operation select {
+            color: #949090;
+            padding: 5px;
+            font-size: 0.8rem;
             border-radius: 5px;
             border: 1px solid #007bff;
             width: 100%;
@@ -194,9 +218,22 @@
 
             <!-- 选择目录的下拉框 -->
             <div class="directory-container">
-                <label for="directory-select">选择目录：</label>
+                <label for="directory-select">目录:</label>
                 <select id="directory-select">
                     <option value="">请选择目录</option>
+                    <!-- 目录选项会通过 JavaScript 动态生成 -->
+                </select>
+            </div>
+            <!-- 文件状态 -->
+            <div class="directory-operation">
+                <label for="directory-operation-zip">压缩:</label>
+                <select id="directory-operation-zip">
+                    <option value="">压缩</option>
+                    <!-- 目录选项会通过 JavaScript 动态生成 -->
+                </select>
+                <label for="directory-operation-unzip">解压:</label>
+                <select id="directory-operation-unzip">
+                    <option value="">解压</option>
                     <!-- 目录选项会通过 JavaScript 动态生成 -->
                 </select>
             </div>

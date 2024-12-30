@@ -43,7 +43,42 @@ const uploadButton = document.getElementById('upload-button');
 const message = document.getElementById('message');
 const overlay = document.getElementById('overlay');
 const directorySelect = document.getElementById('directory-select');  // 获取目录选择下拉框
+const directorySelectZip = document.getElementById('directory-operation-zip');  // 是否压缩选择下拉框
+const directorySelectUnZip = document.getElementById('directory-operation-unzip');  // 是否解压选择下拉框
 let selectedFiles = [];  // 存储选择的文件
+// 假设这些是你需要动态添加的目录或选项的值
+const directoryOptionsZip = [
+    { value: '1', text: '是' },
+    { value: '0', text: '否' },
+];
+// 假设这些是你需要动态添加的目录或选项的值
+const directoryOptionsUnZip = [
+    { value: '1', text: '是' },
+    { value: '0', text: '否' },
+];
+
+// 清空现有选项，确保没有多余的内容
+directorySelectZip.innerHTML = '<option value="">压缩</option>';
+
+// 动态添加选项
+directoryOptionsZip.forEach(option => {
+    const optionElement = document.createElement('option');
+    optionElement.value = option.value;  // 设置 <option> 的 value
+    optionElement.textContent = option.text;  // 设置显示文本
+    directorySelectZip.appendChild(optionElement);  // 将 <option> 添加到 <select>
+});
+
+// 清空现有选项，确保没有多余的内容
+directorySelectUnZip.innerHTML = '<option value="">解压</option>';
+// 动态添加选项
+directoryOptionsUnZip.forEach(option => {
+    const optionElement = document.createElement('option');
+    optionElement.value = option.value;  // 设置 <option> 的 value
+    optionElement.textContent = option.text;  // 设置显示文本
+    directorySelectUnZip.appendChild(optionElement);  // 将 <option> 添加到 <select>
+});
+
+
 
 // 处理文件拖放事件
 dropZone.addEventListener('dragover', (event) => {
@@ -137,6 +172,14 @@ uploadButton.addEventListener('click', async () => {
         message.textContent = '请选择目录';
         return;
     }
+    if (!directorySelectZip.value) {
+        message.textContent = '请选择是否压缩';
+        return;
+    }
+    if (!directorySelectUnZip.value) {
+        message.textContent = '请选择是否解压';
+        return;
+    }
     message.textContent = '';
     //overlay.style.display = 'flex';  // 显示二级界面
     showVideo(overlay)
@@ -144,6 +187,8 @@ uploadButton.addEventListener('click', async () => {
     const formData = new FormData();
     selectedFiles.forEach(file => formData.append('file', file));
     formData.append('directory', selectedDirectory);
+    formData.append('zip', directorySelectZip.value+"");
+    formData.append('unzip', directorySelectUnZip.value+"");
 
     try {
         const response = await fetch('https://www.yexieman.com/toolServer/upload', {

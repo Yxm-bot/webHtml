@@ -272,14 +272,14 @@ cancelButton.onclick = () => {
 
 openButton.onclick = () => {
     if(curClickNode!=null){
+        hideVideo(modal)
+        selectedFile = null;
         const img = curClickNode.querySelector('img');
         if (img) {
             const imgSrc = img.src;  // 获取 <img> 的 src 属性
             window.open(imgSrc, '_blank'); // '_blank' 表示在新标签页中打开
         }
     }
-    hideVideo(modal)
-    selectedFile = null;
 };
 
 // 删除文件
