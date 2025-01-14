@@ -214,6 +214,7 @@ uploadButton.addEventListener('click', async () => {
 });
 
 function hideVideo(video) {
+    overlay.style.display = 'none';
     video.style.transition = "opacity 0.3s ease";
     video.style.opacity = "0";  // 使视频渐隐
     setTimeout(() => {
@@ -222,6 +223,7 @@ function hideVideo(video) {
 }
 
 function showVideo(video) {
+    overlay.style.display = 'flex';
     video.style.visibility = "visible";  // 显示元素
     video.style.transition = "opacity 0.3s ease";
     video.style.opacity = "1";  // 渐显

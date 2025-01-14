@@ -66,6 +66,23 @@
         #fetch-files-btn:hover {
             background-color: #0056b3;
         }
+
+        #delete-files-btn {
+            display: block;
+            width: 250px;
+            margin: 20px auto;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #delete-files-btn:hover {
+            background-color: #0056b3;
+        }
         #message {
             text-align: center;
             font-size: 18px;
@@ -274,6 +291,8 @@
     <div id="message"></div>
 
     <div id="file-list"></div>
+
+    <button id="delete-files-btn">删除整个目录</button>
 
     <!-- Modal -->
     <div id="modal" class="modal">

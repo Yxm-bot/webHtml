@@ -30,6 +30,7 @@ const cancelButton = document.getElementById('close-btn');
 const deleteButton = document.getElementById('delete-btn');
 const openButton = document.getElementById('open-btn');
 const overlay = document.getElementById('overlay');
+const deleteFilesButton = document.getElementById('delete-files-btn');
 hideVideo(modal)
 let selectedFile = null;
 let curClickNode=null
@@ -77,6 +78,40 @@ async function fetchChildDirectories() {
             option.textContent = dir;
             childSelect.appendChild(option);
         });  
+    }
+}
+
+//删除整个目录
+async function deleteDir(){
+    console.log("dirSelect.value===deleteDir==",childSelect.value)
+    dir=dirSelect.value
+    if(childSelect.value!=""){
+        dir=dir+"/"+childSelect.value
+    }
+    console.log("dir===deleteDir==",dir)
+    if (!dir||!childSelect.value) {
+        message.textContent = '请选择目录!';
+        return;
+    }
+    console.log("dir===deleteDir===",dir)
+    message.textContent = '';
+    console.log("dir===deleteDir===")
+    const response = await fetch('https://www.yexieman.com/toolServer/deleteDir', {
+        method: 'POST',
+        body: JSON.stringify({
+            file_path: dir
+        })
+    });
+    const result = await response.json();
+    console.log("=result===deleteDir==",result)
+    if (result.status == 'success') {
+        message.textContent = '删除目录成功！';
+        hideVideo(overlay)
+        childSelect.value=""
+        fetchFiles()
+        fetchChildDirectories()
+    } else {
+        message.textContent = '删除目录失败';
     }
 }
 
@@ -365,3 +400,6 @@ fetchDirectories();
 
 // 设置获取文件按钮的点击事件
 fetchFilesButton.onclick = fetchFiles;
+
+// 删除目录
+deleteFilesButton.onclick = deleteDir;
