@@ -20,6 +20,17 @@
             box-shadow: none;
         }
 
+        label {
+            font-size: 11px;  /* 设置字体大小 */
+            font-weight: bold; /* 设置字体加粗，非必须 */
+            color: #333; /* 设置字体颜色，非必须 */
+        }
+
+        select {
+            font-size: 11px;  /* 设置选择框文字大小 */
+            padding: 5px;  /* 设置内边距，以增加点击区域 */
+        }
+
         /* 移除触摸设备上的高亮框 */
         button,
         a,
@@ -67,7 +78,7 @@
             background-color: #0056b3;
         }
 
-        #delete-files-btn {
+        #delete-dir-btn {
             display: block;
             width: 250px;
             margin: 20px auto;
@@ -80,8 +91,9 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        #delete-files-btn:hover {
-            background-color: #0056b3;
+        #delete-dir-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
         #message {
             text-align: center;
@@ -268,6 +280,57 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+                /* 二级弹框 - 删除目录确认 */
+                .delete-modal {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1001;
+        }
+
+        .delete-modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .delete-modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .delete-modal-footer button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .delete-modal-footer #confirm-delete {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        .delete-modal-footer #cancel-delete {
+            background-color: #ccc;
+            color: black;
+        }
+
     </style>
 </head>
 <body>
@@ -292,7 +355,7 @@
 
     <div id="file-list"></div>
 
-    <button id="delete-files-btn">删除整个目录</button>
+    <button id="delete-dir-btn">删除整个目录</button>
 
     <!-- Modal -->
     <div id="modal" class="modal">
@@ -305,6 +368,18 @@
                 <button id="open-btn">查看</button>
             </div>
          </div>
+    </div>
+
+    <!-- 二级确认删除目录的模态框 -->
+    <div class="delete-modal" id="delete-modal">
+        <div class="delete-modal-content">
+            <p>确认删除该目录吗？</p>
+            <div class="delete-modal-footer">
+                <button id="confirm-delete">确定</button>
+                <button id="cancel-delete">取消</button>
+            </div>
+        </div>
+    </div>
 
     <!-- 二级界面层 -->
     <div class="overlay" id="overlay">

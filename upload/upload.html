@@ -107,14 +107,14 @@
         }
 
         .directory-container label {
-            font-size: 1rem;
+            font-size: 12px;
             color: #333;
         }
 
         .directory-container select {
             color: #949090;
             padding: 5px;
-            font-size: 1rem;
+            font-size: 0.8rem;
             border-radius: 5px;
             border: 1px solid #007bff;
             width: 100%;
@@ -209,6 +209,13 @@
             font-size: 1rem;
             color: #333;
         }
+
+        .drop-zone p {
+            font-size: 11px;  /* 设置文字大小 */
+            font-weight: bold;  /* 可选：设置加粗 */
+            color: #333;  /* 可选：设置文字颜色 */
+            text-align: center;  /* 可选：使文字居中 */
+        }
     </style>
 </head>
 <body>
@@ -220,7 +227,12 @@
             <div class="directory-container">
                 <label for="directory-select">目录:</label>
                 <select id="directory-select">
-                    <option value="">请选择目录</option>
+                    <option value="">选择目录</option>
+                    <!-- 目录选项会通过 JavaScript 动态生成 -->
+                </select>
+                <label for="sync-publicDir">同步public:</label>
+                <select id="sync-publicDir">
+                    <option value="">同步</option>
                     <!-- 目录选项会通过 JavaScript 动态生成 -->
                 </select>
             </div>
@@ -239,7 +251,8 @@
             </div>
 
             <div class="drop-zone" id="drop-zone">
-                <p>拖动文件到此处，或点击选择上传</p>
+                <p>拖动文件到此处，或点击选择上传 
+                 格式支持png,jpg,mp3,mp4,zip,rar</p>
             </div>
 
             <input type="file" id="file-input" class="file-input" accept=".zip,.rar,.png,.jpg" style="display: none;" multiple>

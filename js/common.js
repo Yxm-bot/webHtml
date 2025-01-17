@@ -1,10 +1,13 @@
+
+
 const fetchFilesButton = document.getElementById('fetch-files-btn');
 const fileList = document.getElementById('file-list');
 const message = document.getElementById('message');
 const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modal-message');
 const downloadButton = document.getElementById('download-btn');
-const cancelButton = document.getElementById('cancel-btn');
+const openButton = document.getElementById('open-btn');
+const closeButton = document.getElementById('close-btn');
 let selectedFile = null;
 
 const dir = "publicRes";
@@ -166,9 +169,28 @@ function openModal(fileName) {
     showVideo(modal)
 }
 
+// 查看zip内容
+openButton.onclick = () => {
+    //点击zip查看的实际是upload下的资源，zip名字规范和uploads下的目录名一直
+    // 获取当前的文件名，不包含后缀
+    let fileNameWithoutExtension = selectedFile.substring(0, selectedFile.lastIndexOf('.'));
+    let params={
+        dirSelectValue:"uploads",
+        childSelectValue:fileNameWithoutExtension,
+        root:"false"
+    }
+    // 将参数对象转换为查询字符串
+    let queryString = new URLSearchParams(params).toString();
+
+    // 将整个查询字符串进行 Base64 编码
+    let encodedParams = btoa(queryString);
+    var newUrl = `upload/itemShow.html?data=${encodedParams}`;
+    window.location.href = newUrl;  // 跳转到新页面
+    return
+};
+
 // 关闭模态框
-cancelButton.onclick = () => {
-    //modal.style.display = 'none';
+closeButton.onclick = () => {
     hideVideo(modal)
     selectedFile = null;
 };

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源文件管理</title>
+    <style>
+        button:focus,
+        a:focus,
+        input:focus {
+            outline: none;
+            box-shadow: none; /* 移除焦点框及其他阴影效果 */
+        }
+
+        /* 或者只在键盘焦点时显示 */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* 移除触摸设备上的高亮框 */
+        button,
+        a,
+        input {
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+        }
+        #directory-select {
+            display: block;
+            width: 250px;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        #fetch-files-btn {
+            display: block;
+            width: 250px;
+            margin: 20px auto;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #fetch-files-btn:hover {
+            background-color: #0056b3;
+        }
+        #message {
+            text-align: center;
+            font-size: 18px;
+            color: #ff3333;
+        }
+        #file-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 15px;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .file-item {
+            width: 60px;
+            height: 100px;
+            text-align: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .file-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .file-item img {
+            margin-top: -10px;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+        }
+        .file-item .file-icon {
+            font-size: 48px;
+            color: #007bff;
+        }
+        .file-item p {
+            margin-top: -10px;
+            font-size: 9px;
+            font-weight: bold;
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            position: relative; /* 使得子元素的绝对定位相对于这个容器 */
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content button {
+            margin: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+        }
+        #download-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        #open-btn {
+            background-color: #ccc;
+            color: white;
+        }
+        #modal-message {
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        /* 优化关闭按钮样式，放大两倍 */
+        .close-btn {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            background-color: transparent;
+            border: none;
+            text-shadow:#fa0000;
+            font-size: 90px; /* 放大两倍 */
+            font-weight: bold;
+            color: #fa0000;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #ff0000; /* 鼠标悬停时变为红色 */
+            transform: scale(1.1); /* 鼠标悬停时放大 */
+        }
+
+        .close-btn:active {
+            transform: scale(0.9); /* 点击时缩小 */
+        }
+
+        /* 响应式适配 */
+        @media screen and (max-width: 600px) {
+            .modal-content {
+                width: 90%;
+                padding: 15px;
+            }
+
+            .close-btn {
+                font-size: 90px; /* 小屏幕调整为稍小的字体 */
+                top: 0px;
+                right: 0px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>资源文件管理</h1>
+
+    <button id="fetch-files-btn">获取文件</button>
+
+    <div id="message"></div>
+
+    <div id="file-list"></div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">是否下载该文件?</p>
+            <button id="close-btn" class="close-btn" aria-label="关闭">&times;</button>
+            <button id="download-btn">下载</button>
+            <button id="open-btn">查看</button>
+        </div>
+    </div>
+    <script src="../js/common.js"></script>
+</body>
+</html>

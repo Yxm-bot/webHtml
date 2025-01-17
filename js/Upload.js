@@ -45,6 +45,7 @@ const overlay = document.getElementById('overlay');
 const directorySelect = document.getElementById('directory-select');  // 获取目录选择下拉框
 const directorySelectZip = document.getElementById('directory-operation-zip');  // 是否压缩选择下拉框
 const directorySelectUnZip = document.getElementById('directory-operation-unzip');  // 是否解压选择下拉框
+const syncPublicDir = document.getElementById('sync-publicDir');  // 是否同步public
 let selectedFiles = [];  // 存储选择的文件
 // 假设这些是你需要动态添加的目录或选项的值
 const directoryOptionsZip = [
@@ -53,6 +54,12 @@ const directoryOptionsZip = [
 ];
 // 假设这些是你需要动态添加的目录或选项的值
 const directoryOptionsUnZip = [
+    { value: '1', text: '是' },
+    { value: '0', text: '否' },
+];
+
+// 同步public
+const syncPublicDirOption = [
     { value: '1', text: '是' },
     { value: '0', text: '否' },
 ];
@@ -76,6 +83,16 @@ directoryOptionsUnZip.forEach(option => {
     optionElement.value = option.value;  // 设置 <option> 的 value
     optionElement.textContent = option.text;  // 设置显示文本
     directorySelectUnZip.appendChild(optionElement);  // 将 <option> 添加到 <select>
+});
+
+// 清空现有选项，确保没有多余的内容
+syncPublicDir.innerHTML = '<option value="">同步</option>';
+// 动态添加选项
+syncPublicDirOption.forEach(option => {
+    const optionElement = document.createElement('option');
+    optionElement.value = option.value;  // 设置 <option> 的 value
+    optionElement.textContent = option.text;  // 设置显示文本
+    syncPublicDir.appendChild(optionElement);  // 将 <option> 添加到 <select>
 });
 
 
@@ -189,6 +206,7 @@ uploadButton.addEventListener('click', async () => {
     formData.append('directory', selectedDirectory);
     formData.append('zip', directorySelectZip.value+"");
     formData.append('unzip', directorySelectUnZip.value+"");
+    formData.append('syncPublic', syncPublicDir.value+"");
 
     try {
         const response = await fetch('https://www.yexieman.com/toolServer/upload', {
