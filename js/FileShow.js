@@ -131,6 +131,7 @@ async function deleteDir(){
         fetchChildDirectories()
     } else {
         message.textContent = '删除目录失败';
+        alert(result.message)
     }
 }
 
@@ -206,9 +207,11 @@ deleteButton.addEventListener('click',async () => {
                 message.textContent = '删除文件成功！';
             } else {
                 message.textContent = '删除失败';
+                alert(result.message)
             }
         } catch (error) {
             message.textContent = '删除失败';
+            alert(result.message)
         }finally {
             // overlay.style.display = 'none';  // 隐藏二级界面
             // modal.style.display = 'none';

@@ -219,9 +219,11 @@ uploadButton.addEventListener('click', async () => {
             message.textContent = '文件上传成功！';
         } else {
             message.textContent = '上传失败，请稍后再试。';
+            alert(result.message)
         }
     } catch (error) {
         message.textContent = '上传失败，请重试';
+        alert(result.message)
     }finally {
         //overlay.style.display = 'none';  // 隐藏二级界面
         hideVideo(overlay)

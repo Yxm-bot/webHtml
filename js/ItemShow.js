@@ -290,6 +290,7 @@ async function deleFile(){
             }
         } catch (error) {
             message.textContent = '删除失败';
+            alert('删除失败')
         }finally {
             // overlay.style.display = 'none';  // 隐藏二级界面
             // modal.style.display = 'none';
