@@ -18,12 +18,23 @@ function obfuscateJs(inputFile, outputFile) {
 
     // 混淆 JavaScript
     const obfuscatedJs = jsObfuscator.obfuscate(jsContent, {
-        compact: true, // 压缩代码
-        controlFlowFlattening: true, // 控制流扭曲
-        deadCodeInjection: true, // 注入无效代码
-        stringArray: true, // 字符串数组化
-        rotateStringArray: true, // 字符串数组轮转
-        stringArrayThreshold: 0.75, // 字符串混淆概率
+        compact: true,  // 压缩代码
+        controlFlowFlattening: true,  // 控制流扭曲
+        deadCodeInjection: true,  // 注入无效代码
+        stringArray: true,  // 字符串数组化
+        rotateStringArray: true,  // 字符串数组轮转
+        stringArrayThreshold: 0.75,  // 字符串混淆概率
+        ignoreCustomComments: true,  // 忽略自定义注释
+        removeCDATASectionsFromScriptElement: true,  // 移除 script 标签中的 CDATA
+        collapseWhitespace: true,  // 压缩空格
+        removeComments: true,  // 删除注释
+        obfuscateJavascript: true,  // 混淆 JavaScript
+        renameGlobals: false,  // 全局变量和函数不进行混淆，避免冲突
+        transformObjectKeys: true,  // 混淆对象键名
+        mangle: true,  // 混淆变量和函数名
+        selfDefending: true,  // 启用自我防护，防止反混淆
+        reservedNames: [],  // 不保留任何全局变量名（可选）
+        debugProtection: false,  // 禁用调试保护（可选）
     }).getObfuscatedCode();
 
     // 确保输出目录存在
