@@ -11,18 +11,56 @@ let isRecording = false;
 let transcript = '';
 
 // 重写 console.log
-(function () {
-    const oldLog = console.log;
-    const logContainer = document.getElementById('log');
+// (function () {
+//     const oldLog = console.log;
+//     const logContainer = document.getElementById('log');
 
-    console.log = function () {
-        oldLog.apply(console, arguments);
-        const logEntry = document.createElement('div');
-        logEntry.textContent = `> ${Array.from(arguments).join(' ')}`;
-        logContainer.appendChild(logEntry);
-        logContainer.scrollTop = logContainer.scrollHeight;
-    };
-})();
+//     console.log = function () {
+//         oldLog.apply(console, arguments);
+//         const logEntry = document.createElement('div');
+//         logEntry.textContent = `> ${Array.from(arguments).join(' ')}`;
+//         logContainer.appendChild(logEntry);
+//         logContainer.scrollTop = logContainer.scrollHeight;
+//     };
+// })();
+
+window.addEventListener('DOMContentLoaded', async () => {
+    // 认证检查（登录验证）
+    fetch('https://www.yexieman.com/serverApi/checkLogin', {
+        method: 'GET',
+        credentials: 'include',
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === "已登录") {
+            console.log("用户已登录");
+            // 继续执行需要登录后的操作
+        } else if(data.message === "权限不够"){
+            alert("用户权限不够")
+            window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+        }
+    })
+    .catch(error => {
+        window.location.href = 'https://www.yexieman.com/account/login.html?redirect=' + encodeURIComponent(window.location.href);
+    });
+
+    // 获取目录列表并填充到下拉框
+    const directorySelect = document.getElementById('directory-select');
+    try {
+        const response = await fetch('https://www.yexieman.com/toolServer/getDirectories', {
+            method: 'GET',
+        });
+        const directories = await response.json();
+        directories.forEach(dir => {
+            const option = document.createElement('option');
+            option.value = dir;
+            option.textContent = dir;
+            directorySelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("获取目录失败:", error);
+    }
+});
 
 if ('webkitSpeechRecognition' in window) {
     recognition = new webkitSpeechRecognition();
@@ -69,7 +107,7 @@ translateBtn.addEventListener('click', async () => {
     const targetLanguage = translateLanguageSelect.value;
     const srcLanguage = recordLanguageSelect.value;
     try {
-        const response = await fetch('https://www.yexieman.com/translate', {
+        const response = await fetch('https://www.yexieman.com/translate/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
