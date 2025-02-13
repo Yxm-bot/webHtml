@@ -29,20 +29,24 @@
         .card-container {
             margin-top: 50px;
             display: grid;
-            gap: 20px;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            padding: 20px;
-            width: 50%;
-            max-width: 800px;
-            justify-items: center;
+            gap: 8px;
+            grid-template-columns: repeat(2, 1fr); /* 始终两列 */
+            padding: 10px;
+            width: 100%; /* 宽度占满父容器 */
+            max-width: 800px; /* 最大宽度限制 */
+            justify-items: center; /* 卡片水平居中 */
+            overflow-y: auto; /* 允许垂直滚动 */
+            height: calc(100vh - 150px); /* 设置容器高度，确保可以滚动 */
+            margin-left: auto; /* 水平居中 */
+            margin-right: auto; /* 水平居中 */
         }
 
-        /* 卡片样式 */
+        /* 卡片样式保持不变 */
         .card {
-            width: 150px;
-            height: 200px;
+            width: 120px;
+            height: 180px;
             background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(15px); /* 更强的玻璃通透效果 */
+            backdrop-filter: blur(15px);
             border-radius: 15px;
             box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
             display: flex;
@@ -98,7 +102,7 @@
             }
 
             .card-container {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr); /* 保持两列 */
             }
         }
 
@@ -108,7 +112,7 @@
             }
 
             .card-container {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr); /* 保持两列 */
             }
         }
 
@@ -140,8 +144,16 @@
         <a href="https://www.yexieman.com/upload/fileShow.html" class="card">
             <div class="card-content">
                 <i class="card-icon fas fa-download"></i> <!-- 查看/下载文件图标 -->
-                <h4>查看下载文件</h4>
-                <p>查看或下载您所需的文件。</p>
+                <h4>下载文件</h4>
+                <p>查看或下载文件。</p>
+            </div>
+        </a>
+        <!-- 语音翻译功能卡片 -->
+        <a href="https://www.yexieman.com/AiTranslate/index.html" class="card">
+            <div class="card-content">
+                <i class="card-icon fas fa-language"></i> <!-- 二维码图标 -->
+                <h4>AI翻译</h4>
+                <p>Ai语言翻译转换。</p>
             </div>
         </a>
 
@@ -153,6 +165,8 @@
                 <p>生成对应链接的二维码。</p>
             </div>
         </a>
+
+        
     </div>
 
     <!-- Particles.js 容器 -->
