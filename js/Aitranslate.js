@@ -67,22 +67,25 @@ recordBtn.addEventListener('click', () => {
 translateBtn.addEventListener('click', async () => {
     loadingModal.style.display = 'flex'; // 显示弹框
     const targetLanguage = translateLanguageSelect.value;
+    const srcLanguage = recordLanguageSelect.value;
     try {
-        const response = await fetch('https://www.yexieman.com/toolServer/translate', {
+        const response = await fetch('https://www.yexieman.com/translate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 text: transcript,
-                target_lang: targetLanguage,
+                src_lang: srcLanguage,
+                tgt_lang: targetLanguage
             }),
         });
         const result = await response.json();
-        if (result.status === 'success') {
-            translationArea.value = result.data;
-        } else {
-            alert(result.message);
+        if (result.translated_text) {
+            translationArea.value = result.translated_text;
+        } 
+        if(result.error){
+            alert(result.error);
         }
     } catch (error) {
         console.error("Translation error: ", error);
